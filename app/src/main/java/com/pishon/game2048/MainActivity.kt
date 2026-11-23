@@ -3,15 +3,17 @@ package com.pishon.game2048
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.WindowInsets
 import android.view.WindowInsetsController
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.FrameLayout
 
 /**
  * Single-screen 2048 game. The whole game runs from one bundled HTML page in
@@ -20,13 +22,31 @@ import android.webkit.WebViewClient
 class MainActivity : Activity() {
 
     private lateinit var webView: WebView
+    private lateinit var root: FrameLayout
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val background = Color.parseColor("#FAF8EF")
-        window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(background))
+        window.setBackgroundDrawable(ColorDrawable(background))
+
+        // From Android 15 (API 35) the system draws every app edge to edge,
+        // whatever the app asks for. Older versions are switched to the same
+        // mode so that one code path handles the window insets everywhere.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false)
+        }
+
+        // The insets are applied as padding on this container rather than on the
+        // WebView itself: a WebView paints its page over its whole bounds and
+        // ignores its own padding, which let the header slide under the status
+        // bar and the hint text under the navigation bar on Android 15.
+        root = FrameLayout(this).apply {
+            setBackgroundColor(background)
+            clipToPadding = true
+            fitsSystemWindows = false
+        }
 
         webView = WebView(this).apply {
             setBackgroundColor(background)
@@ -55,59 +75,73 @@ class MainActivity : Activity() {
             }
         }
 
-        setContentView(
+        root.addView(
             webView,
-            ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
+            FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+        )
+        setContentView(
+            root,
+            android.view.ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
         )
 
-        applySystemBarStyle()
         applySafeAreaInsets()
+        applySystemBarStyle()
 
         if (savedInstanceState == null || webView.restoreState(savedInstanceState) == null) {
             webView.loadUrl("file:///android_asset/index.html")
         }
     }
 
-    /** Keeps the page clear of the status bar, gesture bar and camera cutout. */
+    /** Keeps the page clear of the status bar, navigation bar and camera cutout. */
     private fun applySafeAreaInsets() {
-        webView.setOnApplyWindowInsetsListener { view, insets ->
+        root.setOnApplyWindowInsetsListener { view, insets ->
+            val left: Int
+            val top: Int
+            val right: Int
+            val bottom: Int
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 val bars = insets.getInsets(
                     WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout()
                 )
-                view.setPadding(bars.left, bars.top, bars.right, bars.bottom)
+                left = bars.left
+                top = bars.top
+                right = bars.right
+                bottom = bars.bottom
             } else {
                 @Suppress("DEPRECATION")
-                view.setPadding(
-                    insets.systemWindowInsetLeft,
-                    insets.systemWindowInsetTop,
-                    insets.systemWindowInsetRight,
-                    insets.systemWindowInsetBottom
-                )
+                run {
+                    left = insets.systemWindowInsetLeft
+                    top = insets.systemWindowInsetTop
+                    right = insets.systemWindowInsetRight
+                    bottom = insets.systemWindowInsetBottom
+                }
+            }
+            if (view.paddingLeft != left || view.paddingTop != top ||
+                view.paddingRight != right || view.paddingBottom != bottom
+            ) {
+                view.setPadding(left, top, right, bottom)
             }
             insets
         }
-        webView.requestApplyInsets()
+        root.requestApplyInsets()
     }
 
     private fun applySystemBarStyle() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.insetsController?.setSystemBarsAppearance(
-                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS or
-                    WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
+            val lightMask =
                 WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS or
                     WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
-            )
+            window.insetsController?.setSystemBarsAppearance(lightMask, lightMask)
         } else {
             @Suppress("DEPRECATION")
             run {
                 window.statusBarColor = Color.parseColor("#FAF8EF")
                 window.navigationBarColor = Color.parseColor("#FAF8EF")
-                window.decorView.systemUiVisibility =
-                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                var flags = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    flags = flags or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+                }
+                window.decorView.systemUiVisibility = flags
             }
         }
     }
