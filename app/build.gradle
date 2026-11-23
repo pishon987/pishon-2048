@@ -1,0 +1,63 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+// Release signing is driven by GitHub Actions secrets so that no key material
+// ever lives in the repository:
+//   ANDROID_KEYSTORE_PATH      (file decoded from ANDROID_KEYSTORE_BASE64 in CI)
+//   ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD
+def keystorePath = System.getenv('ANDROID_KEYSTORE_PATH')
+def keystoreFile = keystorePath ? new File(keystorePath) : null
+def hasKeystore = keystoreFile != null && keystoreFile.exists()
+
+android {
+    namespace 'com.pishon.game2048'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.pishon.game2048'
+        minSdk 24
+        targetSdk 35
+        versionCode 1
+        versionName '1.0.0'
+    }
+
+    signingConfigs {
+        if (hasKeystore) {
+            release {
+                storeFile keystoreFile
+                storePassword System.getenv('ANDROID_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('ANDROID_KEY_ALIAS')
+                keyPassword System.getenv('ANDROID_KEY_PASSWORD')
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            versionNameSuffix '-debug'
+        }
+        release {
+            minifyEnabled false
+            shrinkResources false
+            if (hasKeystore) {
+                signingConfig signingConfigs.release
+            }
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
+    buildFeatures {
+        buildConfig false
+    }
+}

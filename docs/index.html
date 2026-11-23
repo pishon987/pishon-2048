@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2048 — 안드로이드 앱</title>
+<style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #faf8ef;
+    color: #776e65;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", "Malgun Gothic", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding: 24px;
+  }
+  .card { width: 100%; max-width: 460px; }
+  h1 { font-size: 46px; margin: 0; letter-spacing: -2px; color: #6d6459; }
+  .sub { margin: 6px 0 26px; color: #8d857c; font-size: 15px; }
+  .tile-row { display: flex; gap: 8px; margin-bottom: 26px; }
+  .tile {
+    width: 56px; height: 56px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 17px; color: #f9f6f2;
+  }
+  .t1 { background: #eee4da; color: #776e65; }
+  .t2 { background: #f2b179; }
+  .t3 { background: #f67c5f; }
+  .t4 { background: #edc22e; }
+  ul { padding-left: 20px; margin: 0 0 26px; font-size: 15.5px; line-height: 1.85; }
+  .links { display: flex; flex-wrap: wrap; gap: 10px; }
+  a.btn {
+    display: inline-block; text-decoration: none;
+    background: #8f7a66; color: #f9f6f2;
+    padding: 11px 20px; border-radius: 999px;
+    font-weight: 800; font-size: 14.5px;
+  }
+  a.btn.ghost { background: #efe7db; color: #8f7a66; }
+  footer { margin-top: 30px; color: #a29a90; font-size: 13px; line-height: 1.7; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="tile-row">
+    <div class="tile t1">2</div>
+    <div class="tile t2">8</div>
+    <div class="tile t3">64</div>
+    <div class="tile t4">2048</div>
+  </div>
+  <h1>2048</h1>
+  <p class="sub">스와이프로 숫자를 합쳐 2048을 만드는 오프라인 퍼즐 게임</p>
+  <ul>
+    <li>4×4 스와이프 조작, 부드러운 타일 애니메이션</li>
+    <li>점수·최고 점수·진행 상황을 기기에 저장</li>
+    <li>한 번 되돌리기, 새 게임</li>
+    <li>인터넷 연결 없이 동작, 권한 요청 없음</li>
+  </ul>
+  <div class="links">
+    <a class="btn" href="./play.html">웹에서 해보기</a>
+    <a class="btn ghost" href="./privacy.html">개인정보처리방침</a>
+    <a class="btn ghost" href="https://github.com/pishon987/pishon-2048">소스 코드</a>
+  </div>
+  <footer>
+    안드로이드 앱(패키지 <code>com.pishon.game2048</code>)은 같은 게임을 담은 WebView 앱이며,
+    이 페이지의 웹 버전과 동일하게 동작합니다.
+  </footer>
+</div>
+</body>
+</html>
