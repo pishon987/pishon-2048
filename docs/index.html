@@ -22,18 +22,25 @@
     padding: 32px 24px;
   }
   .card { width: 100%; max-width: 460px; }
-  .tile-row { display: flex; gap: 8px; margin-bottom: 24px; }
+  .tile-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); gap: 7px; margin-bottom: 26px; }
   .tile {
-    width: 64px; height: 64px; border-radius: 9px;
+    aspect-ratio: 1 / 1; border-radius: 9px;
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
-    font-weight: 800; font-size: 17px; color: #F7EEDD;
+    font-weight: 800; font-size: 16px; color: #F7EEDD;
     box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
   }
-  .tile .sym { font-size: 19px; line-height: 1; }
-  .t1 { background: #16443A; }
-  .t2 { background: #63202C; }
-  .t3 { background: #215F63; }
-  .t4 { background: radial-gradient(120% 120% at 50% 0%, #E8395A 0%, #B01B33 62%, #8A1228 100%); box-shadow: inset 0 0 0 1px rgba(246,218,150,.65), 0 0 18px rgba(232,57,90,.45); }
+  .tile .sym { font-size: 18px; line-height: 1; }
+  .t2 { background: #16443A; }
+  .t4 { background: #1C5240; }
+  .t8 { background: #63202C; }
+  .t16 { background: #7A5518; }
+  .t32 { background: #9E4A16; }
+  .t64 { background: #215F63; }
+  .t128 { background: #4A2545; }
+  .t256 { background: #1E3A5F; }
+  .t512 { background: #B01B33; }
+  .t1024 { background: linear-gradient(165deg, #F6DA96 0%, #D9A227 100%); color: #2A1C00; }
+  .t2048 { background: radial-gradient(120% 120% at 50% 0%, #E8395A 0%, #B01B33 62%, #8A1228 100%); box-shadow: inset 0 0 0 1px rgba(246,218,150,.65), 0 0 18px rgba(232,57,90,.45); }
   h1 { font-size: 34px; margin: 0; letter-spacing: -1.4px; color: #F0E2C2; line-height: 1.15; }
   h1 em { font-style: normal; display: block; font-size: 46px; color: #F6DA96; text-shadow: 0 0 22px rgba(246,218,150,.32); }
   .sub { margin: 10px 0 24px; color: #A9C8BA; font-size: 15px; }
@@ -54,10 +61,17 @@
 <body>
 <div class="card">
   <div class="tile-row">
-    <div class="tile t1"><span class="sym">❄️</span><span>2</span></div>
-    <div class="tile t2"><span class="sym">🍬</span><span>8</span></div>
-    <div class="tile t3"><span class="sym">⛄</span><span>64</span></div>
-    <div class="tile t4"><span class="sym">🎅</span><span>2048</span></div>
+    <div class="tile t2"><span class="sym">❄️</span><span>2</span></div>
+    <div class="tile t4"><span class="sym">🧦</span><span>4</span></div>
+    <div class="tile t8"><span class="sym">🍬</span><span>8</span></div>
+    <div class="tile t16"><span class="sym">🔔</span><span>16</span></div>
+    <div class="tile t32"><span class="sym">🕯️</span><span>32</span></div>
+    <div class="tile t64"><span class="sym">⛄</span><span>64</span></div>
+    <div class="tile t128"><span class="sym">🦌</span><span>128</span></div>
+    <div class="tile t256"><span class="sym">🎄</span><span>256</span></div>
+    <div class="tile t512"><span class="sym">🎁</span><span>512</span></div>
+    <div class="tile t1024"><span class="sym">⭐</span><span>1024</span></div>
+    <div class="tile t2048"><span class="sym">🎅</span><span>2048</span></div>
   </div>
   <h1>크리스마스<em>2048</em></h1>
   <p class="sub">눈 내리는 성탄 밤에 숫자를 합쳐 2048을 만드는 오프라인 퍼즐</p>
