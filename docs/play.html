@@ -3,48 +3,96 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#faf8ef">
-<title>2048</title>
+<meta name="theme-color" content="#061510">
+<title>크리스마스 2048</title>
 <style>
+  :root {
+    --night-0: #04100C;
+    --night-1: #0A2019;
+    --night-2: #0E3226;
+    --emerald: #1E7A4C;
+    --gold: #E8C26A;
+    --gold-bright: #F6DA96;
+    --red: #B4233A;
+    --cream: #F7EEDD;
+    --frost: #DCEFE6;
+  }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { margin: 0; height: 100%; }
+  html { height: 100%; background: var(--night-0); }
+  html, body { margin: 0; }
   body {
-    background: #faf8ef;
-    color: #776e65;
+    position: relative;
+    height: 100%;
+    color: var(--frost);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", "Malgun Gothic", Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     overscroll-behavior: none;
     user-select: none;
     -webkit-user-select: none;
     overflow: hidden;
+    background:
+      radial-gradient(120% 78% at 50% -12%, #14513A 0%, rgba(10, 32, 25, 0) 58%),
+      radial-gradient(95% 62% at 104% 104%, rgba(146, 24, 44, .42) 0%, rgba(146, 24, 44, 0) 62%),
+      linear-gradient(180deg, #061510 0%, #04100C 58%, #071A12 100%);
+  }
+  /* soft snow, drawn behind everything and never blocking a touch */
+  #snow {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: .85;
   }
   #app {
+    position: relative;
+    z-index: 1;
     height: 100%;
     max-width: 520px;
     margin: 0 auto;
-    padding: 16px 16px 14px;
+    padding: 14px 16px 12px;
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
-  header { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
-  h1 { margin: 0; font-size: 34px; font-weight: 800; letter-spacing: -1.2px; color: #6d6459; }
+  header { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+  h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -.2px;
+    line-height: 1.12;
+    color: #BFDCCF;
+  }
+  h1 em {
+    display: block;
+    font-style: normal;
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -.8px;
+    color: var(--gold-bright);
+    text-shadow: 0 0 16px rgba(246, 218, 150, .38);
+  }
   .scores { display: flex; gap: 8px; }
   .score-box {
     position: relative;
-    min-width: 80px;
-    padding: 6px 12px;
-    background: #bbada0;
-    border-radius: 9px;
+    min-width: 76px;
+    padding: 6px 11px;
+    background: rgba(8, 32, 25, .78);
+    border: 1px solid rgba(232, 194, 106, .26);
+    border-radius: 10px;
     text-align: center;
-    color: #f9f6f2;
+    color: var(--cream);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05);
   }
-  .score-box .label { display: block; font-size: 10px; font-weight: 700; letter-spacing: 1.2px; opacity: .85; }
+  .score-box .label { display: block; font-size: 9.5px; font-weight: 800; letter-spacing: 1.3px; color: rgba(232, 194, 106, .82); }
   .score-box .value { display: block; font-size: 19px; font-weight: 800; line-height: 1.25; font-variant-numeric: tabular-nums; }
   #score-gain {
-    position: absolute; left: 50%; top: 2px;
-    font-size: 15px; font-weight: 800; color: #7a6f63;
+    position: absolute; left: 50%; top: 1px;
+    font-size: 15px; font-weight: 800; color: var(--gold-bright);
     opacity: 0; pointer-events: none; white-space: nowrap;
+    text-shadow: 0 0 10px rgba(246, 218, 150, .6);
   }
   #score-gain.show { animation: gainUp .65s ease-out; }
   @keyframes gainUp {
@@ -59,22 +107,33 @@
     padding: 9px 18px;
     font-size: 14px;
     font-weight: 800;
-    background: #8f7a66;
-    color: #f9f6f2;
+    color: var(--cream);
+    background: #1B4A38;
     transition: opacity .15s, transform .06s;
   }
   button:active { transform: translateY(1px); }
-  button:disabled { opacity: .38; }
-  button.ghost { background: #efe7db; color: #8f7a66; }
+  button:disabled { opacity: .35; }
+  #new {
+    background: linear-gradient(180deg, var(--gold-bright), #D9AE52);
+    color: #2A1B05;
+    box-shadow: 0 4px 14px rgba(217, 174, 82, .26);
+  }
+  button.ghost {
+    background: rgba(10, 36, 28, .86);
+    color: #CFE9DD;
+    box-shadow: inset 0 0 0 1px rgba(232, 194, 106, .3);
+  }
   .spacer { flex: 1; }
   #board-wrap { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
   #board {
+    --cell: 70px;
     position: relative;
-    background: #bbada0;
-    border-radius: 12px;
+    background: linear-gradient(160deg, #103A2B 0%, #0A241B 100%);
+    border: 1px solid rgba(232, 194, 106, .3);
+    border-radius: 14px;
     overflow: hidden;
     touch-action: none;
-    box-shadow: 0 6px 18px rgba(119, 110, 101, .14);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .48), inset 0 0 44px rgba(0, 0, 0, .34);
   }
   #board.bump { animation: bump .18s ease-out; }
   @keyframes bump {
@@ -83,54 +142,102 @@
     65% { transform: translateX(4px); }
   }
   .grid, .tiles { position: absolute; inset: 0; }
-  .bg-cell { position: absolute; border-radius: 6px; background: rgba(238, 228, 218, .35); }
+  .bg-cell {
+    position: absolute;
+    border-radius: 7px;
+    background: rgba(226, 245, 236, .05);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .045);
+  }
   .tile { position: absolute; left: 0; top: 0; will-change: transform; transition: transform .11s ease-out; }
   .tile-inner {
+    position: relative;
     width: 100%; height: 100%;
-    border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
+    border-radius: 7px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
     line-height: 1;
     font-weight: 800;
     font-variant-numeric: tabular-nums;
-    background: #eee4da;
-    color: #776e65;
+    background: #16443A;
+    color: var(--frost);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06), 0 1px 2px rgba(0, 0, 0, .35);
+    overflow: hidden;
   }
-  .tile-2 .tile-inner { background: #eee4da; }
-  .tile-4 .tile-inner { background: #ede0c8; }
-  .tile-8 .tile-inner { background: #f2b179; color: #f9f6f2; }
-  .tile-16 .tile-inner { background: #f59563; color: #f9f6f2; }
-  .tile-32 .tile-inner { background: #f67c5f; color: #f9f6f2; }
-  .tile-64 .tile-inner { background: #f65e3b; color: #f9f6f2; }
-  .tile-128 .tile-inner { background: #edcf72; color: #f9f6f2; }
-  .tile-256 .tile-inner { background: #edcc61; color: #f9f6f2; }
-  .tile-512 .tile-inner { background: #edc850; color: #f9f6f2; }
-  .tile-1024 .tile-inner { background: #edc53f; color: #f9f6f2; }
-  .tile-2048 .tile-inner { background: #edc22e; color: #f9f6f2; box-shadow: 0 0 20px rgba(243, 215, 116, .75); }
-  .tile-super .tile-inner { background: #3c3a32; color: #f9f6f2; }
+  /* the Christmas symbol sits above the number; the inner text stays the plain
+     number so the score rules read exactly as before */
+  .tile-inner::before {
+    content: "";
+    font-size: calc(var(--cell) * .25);
+    line-height: 1;
+    margin-bottom: calc(var(--cell) * .055);
+    filter: saturate(1.05);
+  }
+  .tile-0 .tile-inner { background: #143C32; }
+  .tile-2 .tile-inner { background: #16443A; color: #E4F4EC; }
+  .tile-2 .tile-inner::before { content: "❄️"; }
+  .tile-4 .tile-inner { background: #1C5240; color: #EAF8F1; }
+  .tile-4 .tile-inner::before { content: "🧦"; }
+  .tile-8 .tile-inner { background: #63202C; color: #FFE4E9; }
+  .tile-8 .tile-inner::before { content: "🍬"; }
+  .tile-16 .tile-inner { background: #7A5518; color: #FFF0CC; }
+  .tile-16 .tile-inner::before { content: "🔔"; }
+  .tile-32 .tile-inner { background: #9E4A16; color: #FFF0DE; }
+  .tile-32 .tile-inner::before { content: "🕯️"; }
+  .tile-64 .tile-inner { background: #215F63; color: #E6FBFF; }
+  .tile-64 .tile-inner::before { content: "⛄"; }
+  .tile-128 .tile-inner { background: #6B4526; color: #F9E8D3; }
+  .tile-128 .tile-inner::before { content: "🦌"; }
+  .tile-256 .tile-inner { background: #1E7A4C; color: #EAFFF3; }
+  .tile-256 .tile-inner::before { content: "🎄"; }
+  .tile-512 .tile-inner { background: #B01B33; color: #FFF0F3; box-shadow: inset 0 0 0 1px rgba(255, 226, 226, .18); }
+  .tile-512 .tile-inner::before { content: "🎁"; }
+  .tile-1024 .tile-inner {
+    background: linear-gradient(165deg, #F6DA96 0%, #D9A227 100%);
+    color: #2A1C00;
+    box-shadow: inset 0 0 0 1px rgba(255, 244, 206, .55), 0 0 16px rgba(217, 162, 39, .4);
+  }
+  .tile-1024 .tile-inner::before { content: "⭐"; }
+  .tile-2048 .tile-inner {
+    background: radial-gradient(120% 120% at 50% 0%, #E8395A 0%, #B01B33 62%, #8A1228 100%);
+    color: #FFF4F6;
+    box-shadow: inset 0 0 0 1px rgba(246, 218, 150, .65), 0 0 22px rgba(232, 57, 90, .5);
+  }
+  .tile-2048 .tile-inner::before { content: "🎅"; }
+  .tile-super .tile-inner {
+    background: radial-gradient(120% 120% at 50% 0%, #2B1B3A 0%, #120A1C 100%);
+    color: var(--gold-bright);
+    box-shadow: inset 0 0 0 1px rgba(246, 218, 150, .55), 0 0 20px rgba(246, 218, 150, .24);
+  }
+  .tile-super .tile-inner::before { content: "✨"; }
   .tile-new .tile-inner { animation: appear .16s ease-out; }
   @keyframes appear { from { transform: scale(.2); opacity: .4; } to { transform: scale(1); opacity: 1; } }
   .tile-merged .tile-inner { animation: pop .2s ease-out; }
   @keyframes pop { 0% { transform: scale(1); } 45% { transform: scale(1.18); } 100% { transform: scale(1); } }
   .overlay {
     position: absolute; inset: 0;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
-    background: rgba(250, 248, 239, .82);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    background: rgba(4, 16, 12, .87);
     opacity: 0; pointer-events: none;
     transition: opacity .22s ease-out;
     z-index: 5;
+    text-align: center;
+    padding: 18px;
   }
   .overlay.show { opacity: 1; pointer-events: auto; }
-  .overlay .msg { font-size: 27px; font-weight: 900; color: #6d6459; letter-spacing: -.5px; }
-  .overlay.win { background: rgba(237, 194, 46, .9); }
-  .overlay.win .msg { color: #fff; text-shadow: 0 2px 8px rgba(143, 106, 0, .35); }
-  .overlay.win button { background: #f9f6f2; color: #8f7a66; }
-  .hint { margin: 0; text-align: center; font-size: 12px; color: #a29a90; }
+  .overlay .msg { font-size: 27px; font-weight: 900; color: var(--gold-bright); letter-spacing: -.5px; text-shadow: 0 0 18px rgba(246, 218, 150, .35); }
+  .overlay .sub { margin: 0 0 6px; font-size: 13px; font-weight: 700; color: #A9C8BA; }
+  .overlay.win { background: radial-gradient(130% 110% at 50% 0%, rgba(176, 27, 51, .95) 0%, rgba(92, 12, 30, .96) 100%); }
+  .overlay.win .msg { color: #FFF0D2; text-shadow: 0 2px 14px rgba(0, 0, 0, .35); }
+  .overlay.win .sub { color: rgba(255, 236, 208, .82); }
+  .overlay.win button { background: linear-gradient(180deg, var(--gold-bright), #D9AE52); color: #2A1B05; }
+  .hint { margin: 0; text-align: center; font-size: 12px; color: #7E9C92; }
 </style>
 </head>
 <body>
+<canvas id="snow" aria-hidden="true"></canvas>
 <div id="app">
   <header>
-    <h1>2048</h1>
+    <h1>크리스마스<em>2048</em></h1>
     <div class="scores">
       <div class="score-box">
         <span class="label">SCORE</span>
@@ -156,6 +263,7 @@
       <div class="tiles" id="tiles"></div>
       <div class="overlay" id="overlay">
         <div class="msg" id="overlay-msg"></div>
+        <p class="sub" id="overlay-sub"></p>
         <button id="overlay-btn"></button>
       </div>
     </div>
@@ -181,6 +289,7 @@
   var undoBtn = document.getElementById('undo');
   var overlayEl = document.getElementById('overlay');
   var overlayMsg = document.getElementById('overlay-msg');
+  var overlaySub = document.getElementById('overlay-sub');
   var overlayBtn = document.getElementById('overlay-btn');
 
   var grid = [];
@@ -230,10 +339,12 @@
     return 'tile-super';
   }
 
+  /* The number stays the largest thing on a tile; the Christmas symbol is painted
+     above it by CSS so the two read together without hiding the 2048 numbers. */
   function fontSizeFor(v) {
     var len = String(v).length;
-    var ratio = len <= 2 ? 0.46 : (len === 3 ? 0.38 : (len === 4 ? 0.31 : 0.25));
-    return Math.max(11, Math.round(cell * ratio));
+    var ratio = len <= 2 ? 0.34 : (len === 3 ? 0.29 : (len === 4 ? 0.245 : 0.2));
+    return Math.max(10, Math.round(cell * ratio));
   }
 
   function posX(c) { return pad + c * (cell + gap); }
@@ -253,6 +364,7 @@
 
     boardEl.style.width = boardSize + 'px';
     boardEl.style.height = boardSize + 'px';
+    if (boardEl.style.setProperty) boardEl.style.setProperty('--cell', cell + 'px');
 
     gridEl.innerHTML = '';
     for (var r = 0; r < SIZE; r++) {
@@ -430,8 +542,9 @@
 
   /* ---------- overlay ---------- */
 
-  function showOverlay(text, buttonLabel, isWin) {
+  function showOverlay(text, buttonLabel, isWin, subText) {
     overlayMsg.textContent = text;
+    if (overlaySub) overlaySub.textContent = subText || '';
     overlayBtn.textContent = buttonLabel;
     overlayEl.classList.toggle('win', !!isWin);
     overlayEl.classList.add('show');
@@ -556,10 +669,10 @@
       saveState();
 
       if (won) {
-        showOverlay('2048 달성!', '계속하기', true);
+        showOverlay('2048 달성!', '계속하기', true, '메리 크리스마스!');
       } else if (!canMove()) {
         over = true;
-        showOverlay('게임 오버', '새 게임', false);
+        showOverlay('게임 오버', '새 게임', false, '새 게임으로 다시 도전해 보세요');
       }
     }, MOVE_MS);
   }
@@ -652,6 +765,99 @@
     }, { passive: false });
   }
 
+  /* ---------- snow ---------- */
+
+  /* A small canvas of drifting flakes. It is deliberately cheap: a few dozen
+     circles, no shadows or blur, device pixels capped at 2x, and the animation
+     stops completely while the app is in the background. */
+  function initSnow() {
+    var canvas = document.getElementById('snow');
+    if (!canvas || !canvas.getContext || typeof window.requestAnimationFrame !== 'function') return;
+
+    var ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var w = 0, h = 0, flakes = [], rafId = null, lastTs = 0, running = false;
+
+    function newFlake(atTop) {
+      var r = 0.7 + Math.random() * 1.9;
+      return {
+        x: Math.random() * w,
+        y: atTop ? -r * 2 - Math.random() * h * 0.3 : Math.random() * h,
+        r: r,
+        vy: 5 + r * 4 + Math.random() * 7,
+        drift: 4 + Math.random() * 8,
+        phase: Math.random() * Math.PI * 2,
+        alpha: 0.22 + Math.random() * 0.45
+      };
+    }
+
+    function resize() {
+      w = window.innerWidth;
+      h = window.innerHeight;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+      if (ctx.setTransform) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      var count = Math.round(Math.min(46, Math.max(16, (w * h) / 17000)));
+      if (reduce) count = Math.round(count / 2);
+      flakes = [];
+      for (var i = 0; i < count; i++) flakes.push(newFlake(false));
+    }
+
+    function frame(ts) {
+      if (!running) return;
+      var dt = lastTs ? Math.min((ts - lastTs) / 1000, 0.05) : 0.016;
+      lastTs = ts;
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = '#FFFFFF';
+      var t = ts / 1000;
+      for (var i = 0; i < flakes.length; i++) {
+        var f = flakes[i];
+        f.y += f.vy * dt;
+        f.x += Math.sin(t * 0.6 + f.phase) * f.drift * dt;
+        if (f.y - f.r > h) { flakes[i] = newFlake(true); continue; }
+        if (f.x < -6) f.x = w + 6;
+        else if (f.x > w + 6) f.x = -6;
+        ctx.globalAlpha = f.alpha;
+        ctx.beginPath();
+        ctx.arc(f.x, f.y, f.r, 0, 6.2832);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      rafId = window.requestAnimationFrame(frame);
+    }
+
+    function start() {
+      if (running) return;
+      running = true;
+      lastTs = 0;
+      rafId = window.requestAnimationFrame(frame);
+    }
+
+    function stop() {
+      running = false;
+      if (rafId !== null && window.cancelAnimationFrame) window.cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+
+    resize();
+    start();
+
+    if (window.addEventListener) {
+      window.addEventListener('resize', resize);
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'hidden') stop();
+        else start();
+      });
+    }
+  }
+
   /* ---------- boot ---------- */
 
   function boot() {
@@ -664,6 +870,7 @@
 
     bindKeys();
     bindSwipe();
+    initSnow();
 
     var saved = loadState();
     layout();
@@ -675,7 +882,7 @@
       setScore(saved.score | 0);
       if (!canMove()) {
         over = true;
-        showOverlay('게임 오버', '새 게임', false);
+        showOverlay('게임 오버', '새 게임', false, '새 게임으로 다시 도전해 보세요');
       }
       if (hasValue(2048)) wonShown = true;
       undoState = null;

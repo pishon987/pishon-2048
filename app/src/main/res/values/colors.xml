@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="game_background">#FAF8EF</color>
-    <color name="ic_launcher_background">#FAF8EF</color>
+    <!-- Christmas night: the same dark pine green the game page paints behind the board. -->
+    <color name="game_background">#061510</color>
+    <color name="ic_launcher_background">#0B2A22</color>
 </resources>

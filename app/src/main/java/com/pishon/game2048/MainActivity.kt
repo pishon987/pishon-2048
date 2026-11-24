@@ -28,7 +28,7 @@ class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val background = Color.parseColor("#FAF8EF")
+        val background = Color.parseColor("#061510")
         window.setBackgroundDrawable(ColorDrawable(background))
 
         // From Android 15 (API 35) the system draws every app edge to edge,
@@ -126,22 +126,23 @@ class MainActivity : Activity() {
         root.requestApplyInsets()
     }
 
+    /**
+     * The page is a dark Christmas night, so the clock and the navigation buttons
+     * have to be light: the LIGHT_* appearance flags are cleared (they would ask
+     * for dark icons) instead of set.
+     */
     private fun applySystemBarStyle() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val lightMask =
                 WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS or
                     WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
-            window.insetsController?.setSystemBarsAppearance(lightMask, lightMask)
+            window.insetsController?.setSystemBarsAppearance(0, lightMask)
         } else {
             @Suppress("DEPRECATION")
             run {
-                window.statusBarColor = Color.parseColor("#FAF8EF")
-                window.navigationBarColor = Color.parseColor("#FAF8EF")
-                var flags = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    flags = flags or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-                }
-                window.decorView.systemUiVisibility = flags
+                window.statusBarColor = Color.parseColor("#061510")
+                window.navigationBarColor = Color.parseColor("#061510")
+                window.decorView.systemUiVisibility = 0
             }
         }
     }

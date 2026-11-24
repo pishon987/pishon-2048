@@ -3,57 +3,68 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>2048 — 안드로이드 앱</title>
+<title>크리스마스 2048 — 안드로이드 앱</title>
 <style>
+  :root { color-scheme: dark; }
   body {
     margin: 0;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #faf8ef;
-    color: #776e65;
+    background:
+      radial-gradient(120% 78% at 50% -12%, #14513A 0%, rgba(10, 32, 25, 0) 58%),
+      radial-gradient(95% 62% at 104% 104%, rgba(146, 24, 44, .42) 0%, rgba(146, 24, 44, 0) 62%),
+      linear-gradient(180deg, #061510 0%, #04100C 58%, #071A12 100%);
+    color: #DCEFE6;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", "Malgun Gothic", Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
-    padding: 24px;
+    padding: 32px 24px;
   }
   .card { width: 100%; max-width: 460px; }
-  h1 { font-size: 46px; margin: 0; letter-spacing: -2px; color: #6d6459; }
-  .sub { margin: 6px 0 26px; color: #8d857c; font-size: 15px; }
-  .tile-row { display: flex; gap: 8px; margin-bottom: 26px; }
+  .tile-row { display: flex; gap: 8px; margin-bottom: 24px; }
   .tile {
-    width: 56px; height: 56px; border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 800; font-size: 17px; color: #f9f6f2;
+    width: 64px; height: 64px; border-radius: 9px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    font-weight: 800; font-size: 17px; color: #F7EEDD;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
   }
-  .t1 { background: #eee4da; color: #776e65; }
-  .t2 { background: #f2b179; }
-  .t3 { background: #f67c5f; }
-  .t4 { background: #edc22e; }
-  ul { padding-left: 20px; margin: 0 0 26px; font-size: 15.5px; line-height: 1.85; }
+  .tile .sym { font-size: 19px; line-height: 1; }
+  .t1 { background: #16443A; }
+  .t2 { background: #63202C; }
+  .t3 { background: #215F63; }
+  .t4 { background: radial-gradient(120% 120% at 50% 0%, #E8395A 0%, #B01B33 62%, #8A1228 100%); box-shadow: inset 0 0 0 1px rgba(246,218,150,.65), 0 0 18px rgba(232,57,90,.45); }
+  h1 { font-size: 34px; margin: 0; letter-spacing: -1.4px; color: #F0E2C2; line-height: 1.15; }
+  h1 em { font-style: normal; display: block; font-size: 46px; color: #F6DA96; text-shadow: 0 0 22px rgba(246,218,150,.32); }
+  .sub { margin: 10px 0 24px; color: #A9C8BA; font-size: 15px; }
+  ul { padding-left: 20px; margin: 0 0 24px; font-size: 15.5px; line-height: 1.85; color: #D3E8DE; }
+  ul b { color: #F6DA96; }
   .links { display: flex; flex-wrap: wrap; gap: 10px; }
   a.btn {
     display: inline-block; text-decoration: none;
-    background: #8f7a66; color: #f9f6f2;
+    background: linear-gradient(180deg, #F6DA96, #D9AE52); color: #2A1B05;
     padding: 11px 20px; border-radius: 999px;
     font-weight: 800; font-size: 14.5px;
   }
-  a.btn.ghost { background: #efe7db; color: #8f7a66; }
-  footer { margin-top: 30px; color: #a29a90; font-size: 13px; line-height: 1.7; }
+  a.btn.ghost { background: rgba(10,36,28,.86); color: #CFE9DD; box-shadow: inset 0 0 0 1px rgba(232,194,106,.3); }
+  footer { margin-top: 28px; color: #7E9C92; font-size: 13px; line-height: 1.7; }
+  code { color: #F6DA96; }
 </style>
 </head>
 <body>
 <div class="card">
   <div class="tile-row">
-    <div class="tile t1">2</div>
-    <div class="tile t2">8</div>
-    <div class="tile t3">64</div>
-    <div class="tile t4">2048</div>
+    <div class="tile t1"><span class="sym">❄️</span><span>2</span></div>
+    <div class="tile t2"><span class="sym">🍬</span><span>8</span></div>
+    <div class="tile t3"><span class="sym">⛄</span><span>64</span></div>
+    <div class="tile t4"><span class="sym">🎅</span><span>2048</span></div>
   </div>
-  <h1>2048</h1>
-  <p class="sub">스와이프로 숫자를 합쳐 2048을 만드는 오프라인 퍼즐 게임</p>
+  <h1>크리스마스<em>2048</em></h1>
+  <p class="sub">눈 내리는 성탄 밤에 숫자를 합쳐 2048을 만드는 오프라인 퍼즐</p>
   <ul>
     <li>4×4 스와이프 조작, 부드러운 타일 애니메이션</li>
+    <li>타일마다 <b>❄️🧦🍬🔔🕯️⛄🦌🎄🎁⭐🎅</b> 크리스마스 심볼</li>
+    <li>가볍게 흩날리는 눈, 게임 조작은 그대로</li>
     <li>점수·최고 점수·진행 상황을 기기에 저장</li>
     <li>한 번 되돌리기, 새 게임</li>
     <li>인터넷 연결 없이 동작, 권한 요청 없음</li>
